@@ -1,8 +1,12 @@
 ```mermaid 
 sequenceDiagram
+    participant U as User
     participant B as Browser
     participant S as Server
     
+    Note left of U: Submits the form with a new note
+    U->>B: New Note
+
     Note left of B: Browser sends a POST request to the server alongwith the user input
     B->>+S: POST  https://studies.cs.helsinki.fi/exampleapp/new_note
     Note right of S: Server adds the input (new notes) to the notes array and redirects the browser

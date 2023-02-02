@@ -1,7 +1,11 @@
 ```mermaid 
 sequenceDiagram
+    participant U as User
     participant B as Browser
     participant S as Server
+
+    Note left of U: Submits the form with a new note
+    U->>B: New Note
     
     Note left of B: Browser executes the event handler that prevents the default behavior of form submission (form submission and reload) 
     Note left of B: Browser creates a new notes, adds it to the list of notes and redraws  the content of the screen.
