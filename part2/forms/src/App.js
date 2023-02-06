@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Filer from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import axios from 'axios'
 
 const personExists = (arr, val) =>{
   if (arr.filter(e => e.name === val).length > 0) {
@@ -10,10 +11,10 @@ const personExists = (arr, val) =>{
 return false
 }
 
+
+
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' , number: '0900-78601'}
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('')
@@ -55,6 +56,16 @@ const App = () => {
   }
 
   const displayList= persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
+
+  useEffect(() => {
+  console.log('effect')
+  axios
+    .get('http://localhost:3001/persons')
+    .then(response => {
+      console.log('promise fulfilled')
+      setPersons(response.data)
+    })
+}, [])
 
   return (
     <div>
