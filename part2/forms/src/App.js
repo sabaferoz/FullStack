@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import Name from './components/Name'
+import Filer from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
 
 const personExists = (arr, val) =>{
   if (arr.filter(e => e.name === val).length > 0) {
@@ -57,37 +59,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      filter shown with: 
-          <input
-           value={filter}
-           onChange={handleFilterChange}
-          />
-      <form onSubmit={addPerson}>
-        <h3> Add a new</h3>
-        <div>
-          name: 
-          <input
-           value={newName}
-           onChange={handleNameChange}
-          />
-          </div>
-          <div>
-            number:
-          <input  value={newNumber}
-           onChange={handleNumberChange}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+     <Filer filer={filter} handleFilterChange= {handleFilterChange}/>
+      <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
-        <ul>
-        <ul>
-          {displayList.map(displayList => 
-            <Name key={displayList.name} name={displayList.name} number={displayList.number} />
-          )}
-        </ul>
-      </ul>
+      <Persons displayList={displayList}/>
+       
     </div>
   )
 }
