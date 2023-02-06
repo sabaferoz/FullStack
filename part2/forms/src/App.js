@@ -3,6 +3,7 @@ import Filer from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const personExists = (arr, val) =>{
   if (arr.filter(e => e.name === val).length > 0) {
@@ -18,6 +19,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('')
+  const [message, setMessage] = useState('')
+  const [styleClass, setStyleClass] = useState('success')
  
 
   const handleNameChange = (event) => {
@@ -45,18 +48,23 @@ const App = () => {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one`)){
             const personObject= persons.filter(person=>person.name===newName)
             console.log('person to update', personObject)
-            personObject["number"] = newNumber
+            personObject[0].number = newNumber
             console.log('updated object', personObject)
              console.log('id to update', personObject[0].id)
             personService
-            .update(personObject[0].id, personObject)
+            .update(personObject[0].id, personObject[0])
       .     then(updatedPerson => {
             setPersons(persons.map(person => person.id !== personObject[0].id ? person : updatedPerson))
             })
             .catch(error => {
-            alert(
-            `the person '${newName}' was already deleted from server`
-            )
+              console.log("The person already deleted")
+            setMessage(
+          `the person '${newName}' was already deleted from server`
+        )
+        setStyleClass('error')
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
             setPersons(persons.filter(person => person.id !== personObject[0].id))
     })
 
@@ -75,6 +83,13 @@ const App = () => {
         console.log('new persons', newPersons)
         setPersons(newPersons)
       })
+      setMessage(
+          `Added '${newName}'`
+        )
+        setStyleClass('success')
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
     }
   }
 
@@ -108,6 +123,7 @@ const handleDelete= (id, name) =>{
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} classToUse={styleClass} />
      <Filer filer={filter} handleFilterChange= {handleFilterChange}/>
       <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
