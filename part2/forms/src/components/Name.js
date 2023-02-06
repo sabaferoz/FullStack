@@ -1,6 +1,9 @@
-const Name = ({ name, number }) => {
+const Name = (props) => {
   return (
-    <li>{name} {number}</li>
+    <>
+    <li>{props.name} {props.number}</li>
+    <button onClick={props.handleDelete}>Delete</button>
+  </>
   )
 }
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Filer from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
-import axios from 'axios'
+import personService from './services/persons'
 
 const personExists = (arr, val) =>{
   if (arr.filter(e => e.name === val).length > 0) {
@@ -39,33 +39,71 @@ const App = () => {
   const addPerson = (event)=>{
      event.preventDefault()
      
-    console.log(personExists(persons,newName), "chwk")
+    console.log(personExists(persons,newName), "check if person exits")
+
      if (personExists(persons,newName)){
-      return (alert(`${newName} is already added to phonebook`))
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one`)){
+            const personObject= persons.filter(person=>person.name===newName)
+            console.log('person to update', personObject)
+            personObject["number"] = newNumber
+            console.log('updated object', personObject)
+             console.log('id to update', personObject[0].id)
+            personService
+            .update(personObject[0].id, personObject)
+      .     then(updatedPerson => {
+            setPersons(persons.map(person => person.id !== personObject[0].id ? person : updatedPerson))
+            })
+            .catch(error => {
+            alert(
+            `the person '${newName}' was already deleted from server`
+            )
+            setPersons(persons.filter(person => person.id !== personObject[0].id))
+    })
+
+      }
      }
-     const personObject = {
+  else{
+      const personObject = {
       name: newName,
       number: newNumber,
       }
 
-    const newPersons = persons.concat(personObject)
-    console.log('new persons', newPersons)
-    setPersons(newPersons)
-    console.log('updated persons', persons)
-
+    personService
+      .create(personObject)
+      .then(newPerson => {
+        const newPersons = persons.concat(newPerson)
+        console.log('new persons', newPersons)
+        setPersons(newPersons)
+      })
+    }
   }
 
   const displayList= persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
 
   useEffect(() => {
-  console.log('effect')
-  axios
-    .get('http://localhost:3001/persons')
-    .then(response => {
-      console.log('promise fulfilled')
-      setPersons(response.data)
-    })
+  personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
 }, [])
+
+const handleDelete= (id, name) =>{
+  if (window.confirm("Delete " + name + " ?" ) ){
+  console.log('delete', id)
+  personService
+      .del(id)
+      .then(data=> {
+        console.log('deleted', data)
+        personService
+      .getAll()
+      .then(updatedPersons => {
+        setPersons(updatedPersons)
+      })
+      })
+
+    }
+}
 
   return (
     <div>
@@ -73,7 +111,7 @@ const App = () => {
      <Filer filer={filter} handleFilterChange= {handleFilterChange}/>
       <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
-      <Persons displayList={displayList}/>
+      <Persons displayList={displayList} handleDelete={handleDelete}/>
        
     </div>
   )
