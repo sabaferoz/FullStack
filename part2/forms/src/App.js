@@ -20,7 +20,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('')
   const [message, setMessage] = useState('')
-  const [styleClass, setStyleClass] = useState('success')
+  const [styleClass, setStyleClass] = useState('')
  
 
   const handleNameChange = (event) => {
@@ -93,7 +93,7 @@ const App = () => {
     }
   }
 
-  const displayList= persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
+  const displayList= persons.filter(person => person.name.toLowerCase().startsWith(filter.toLowerCase()))
 
   useEffect(() => {
   personService
