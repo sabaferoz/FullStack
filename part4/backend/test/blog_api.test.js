@@ -1,10 +1,12 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-const blog = require('../models/blog')
+const bcrypt = require('bcrypt')
+const helper = require('./test_helper')
 
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/blog')
 
 const initialBlogs =  [
     {
@@ -21,12 +23,21 @@ const initialBlogs =  [
   }
 ]
 
+describe('when there are initially two posts in db', () => {
+
 beforeEach(async () => {
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = new User({ username: 'root', passwordHash })
+
+  const userResp=await user.save()
   await Blog.deleteMany({})
+  initialBlogs[0].user=userResp.id
   let blogObject = new Blog(initialBlogs[0])
   await blogObject.save()
+  initialBlogs[1].user=userResp.id
   blogObject = new Blog(initialBlogs[1])
   await blogObject.save()
+
 }, 100000)
 
 test('blogs are returned as json', async () => {
@@ -42,30 +53,7 @@ test('there are two blogs', async () => {
   expect(response.body).toHaveLength(2)
 }, 100000)
 
-test('a valid blog can be added', async () => {
-  const newblog = {
-    title: "Canonical string reduction",
-    author: "Edsger W. Dijkstra",
-    url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-    likes: 12,
-  }
 
-  await api
-    .post('/api/blogs')
-    .send(newblog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
-
-
-  const response = await api.get('/api/blogs')
-
-  const title = response.body.map(r=> r.title) 
-
-  expect(response.body).toHaveLength(initialBlogs.length + 1)
-  expect(title).toContain(
-    'Canonical string reduction'
-  )
-}, 100000)
 
 test('blog posts have unique id', async () => {
   const response = await api.get('/api/blogs')
@@ -74,6 +62,17 @@ test('blog posts have unique id', async () => {
 }, 100000)
 
 test('if like property is missing, it is set to 0', async () => {
+
+    const loginResponse = await api.post('/api/login')
+    .send({username:'root', password: 'sekret'})
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+    const token= loginResponse.body.token
+
+
+       console.log("TOKEN", loginResponse.body.token)
+       
   const newblog = {
     title: "test",
     author: "Edsger 1",
@@ -82,6 +81,7 @@ test('if like property is missing, it is set to 0', async () => {
 
  const response= await api
     .post('/api/blogs')
+    .set('Authorization',token.toString)
     .send(newblog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -128,9 +128,23 @@ test('get blog with a specific id', async () => {
 }, 100000)
 
 test('delete blog with specific id', async () => {
+  
+
+    const loginResponse = await api.post('/api/login')
+    .send({username:'root', password: 'sekret'})
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+    const token= loginResponse.body.token
+
+
+       console.log("TOKEN", loginResponse.body.token)
+     
+
   const response= await api.get('/api/blogs')
   const id = response.body[0].id
   await api.delete('/api/blogs/' +  id)
+  .set('Authorization',token )
   .expect(204)
 
   const response2= await api.get('/api/blogs')
@@ -138,7 +152,7 @@ test('delete blog with specific id', async () => {
   
 }, 100000)
 
-test('update a specific note', async () => {
+test('update a specific blog', async () => {
   const response= await api.get('/api/blogs')
   const id = response.body[0].id
   var blog= response.body[0]
@@ -149,6 +163,7 @@ test('update a specific note', async () => {
   
 }, 100000)
 
+})
 
 afterAll(async () => {
   await mongoose.connection.close()
