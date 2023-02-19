@@ -2,6 +2,7 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const middleware = require('../utils/middleware')
+const jwt = require("jsonwebtoken");
 
 
 blogsRouter.get('/', async (request, response) => {
@@ -67,6 +68,8 @@ blogsRouter.get('/:id', async (request, response) => {
 })
 
 blogsRouter.put('/:id', async (request, response) => {
+  const id= request.params.id
+  console.log(id)
   const blog= await Blog.findByIdAndUpdate(id, request.body, {new: true} )
   if(blog){
   response.json(blog)

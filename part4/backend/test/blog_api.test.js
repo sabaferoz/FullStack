@@ -81,7 +81,7 @@ test('if like property is missing, it is set to 0', async () => {
 
  const response= await api
     .post('/api/blogs')
-    .set('Authorization',token.toString)
+    .set({Authorization: `bearer ${token}`})
     .send(newblog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
