@@ -76,26 +76,51 @@ const App = () => {
     }
   }
 
-  const updateBlogs = (newBlog) => {
-    console.log('author',newBlog.user.username)
-    blogFormRef.current.toggleVisibility()
-    const newBlogs=blogs.concat(newBlog)
-    newBlogs.sort((a,b) => a.likes - b.likes)
-    setBlogs(newBlogs)
+  const updateBlogs = async(title,url) => {
+    try {
+      const newBlog = await blogService.create({
+        'title': title, 'url': url
+      })
+      console.log('Blog created ', newBlog)
+      console.log('before user', newBlog.user)
+      newBlog.user={ 'username': user.username, 'id': user.id }
+      console.log('user', newBlog.user)
+      handleNotificationChange(`a new blog ${title} by ${user.username}`, 'success')
+      console.log('author',newBlog.user.username)
+      blogFormRef.current.toggleVisibility()
+      const newBlogs=blogs.concat(newBlog)
+      newBlogs.sort((a,b) => a.likes - b.likes)
+      setBlogs(newBlogs)
+    } catch (exception) {
+      console.log(exception)
+      handleNotificationChange('Unable to add blog', 'error')
+    }
   }
 
-  const handleBlogChange = (updatedBlog) => {
-    console.log(updatedBlog)
-    const updatedBlogs=blogs.map(blog => {
-      if(blog.id===updatedBlog)
-        blog.likes=updatedBlog.likes
+  const handleBlogChange = async (blog) => {
+    try {
+      console.log(blog.id)
+      const newBlog={ _id: blog.id, likes: blog.likes+1, title: blog.title, url: blog.url,
+        user: blog.user.id }
+      const updatedBlog = await blogService.update(blog.id, newBlog)
+      console.log('new blog', newBlog)
+      console.log('Blog updated ', updatedBlog)
+      blog.likes=blog.likes+1
+      const updatedBlogs=blogs.map(blog => {
+        if(blog.id===updatedBlog)
+          blog.likes=updatedBlog.likes
 
-      return blog
+        return blog
 
-    })
-    console.log(updatedBlogs)
-    updatedBlogs.sort((a,b) => a.likes - b.likes)
-    setBlogs(updatedBlogs)
+      })
+      console.log(updatedBlogs)
+      updatedBlogs.sort((a,b) => a.likes - b.likes)
+      setBlogs(updatedBlogs)
+
+    } catch (exception) {
+      console.log(exception)
+      handleNotificationChange('Unable to update blog', 'error')
+    }
   }
 
   const handleBlogDeletion = (id) => {
@@ -146,7 +171,7 @@ const App = () => {
     return(
       <Togglable buttonLabel="Add new blog" cancelButtonLabel="cancel" ref={blogFormRef}>
 
-        <BlogForm user={user} updateBlogs={updateBlogs} handleNotificationChange={handleNotificationChange}/>
+        <BlogForm updateBlogs={updateBlogs}/>
       </Togglable>
 
     )

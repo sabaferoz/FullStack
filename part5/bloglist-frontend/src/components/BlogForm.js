@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const BlogForm = ({ user, updateBlogs, handleNotificationChange
+const BlogForm = ({updateBlogs,
 }) => {
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
@@ -12,22 +12,9 @@ const BlogForm = ({ user, updateBlogs, handleNotificationChange
   const addNewBlog = async (event) => {
     event.preventDefault()
     console.log('adding new blog')
-    try {
-      const newBlog = await blogService.create({
-        'title': title, 'url': url
-      })
-      console.log('Blog created ', newBlog)
-      console.log('before user', newBlog.user)
-      newBlog.user={ 'username': user.username, 'id': user.id }
-      console.log('user', newBlog.user)
-      updateBlogs(newBlog)
-      setTitle('')
+    updateBlogs(title,url)
+    setTitle('')
       setUrl('')
-      handleNotificationChange(`a new blog ${title} by ${user.username}`, 'success')
-    } catch (exception) {
-      console.log(exception)
-      handleNotificationChange('Unable to add blog', 'error')
-    }
   }
 
 

@@ -5,20 +5,7 @@ const Blog = ({ blog,  user, handleNotificationChange, handleBlogChange, handleB
   const addLikes = async (event) => {
     event.preventDefault()
     console.log('increasing likes for blog', `${blog.title}`)
-    try {
-      console.log(blog.id)
-      const newBlog={ _id: blog.id, likes: blog.likes+1, title: blog.title, url: blog.url,
-        user: blog.user.id }
-      const updatedBlog = await blogService.update(blog.id, newBlog)
-      console.log('new blog', newBlog)
-      console.log('Blog updated ', updatedBlog)
-      blog.likes=blog.likes+1
-      handleBlogChange(updatedBlog)
-
-    } catch (exception) {
-      console.log(exception)
-      handleNotificationChange('Unable to update blog', 'error')
-    }
+    handleBlogChange(blog)
   }
 
   const deleteBlog= async(event) => {
@@ -48,13 +35,13 @@ const Blog = ({ blog,  user, handleNotificationChange, handleBlogChange, handleB
 
   return(
     <div>
-      <div>
+      <div className='author'>
     Author: {blog.user.username}
       </div>
-      <div>
+      <div className='url'>
     Url: {blog.url}
       </div>
-      <div>
+      <div className='likes'>
     Likes: {blog.likes} <button onClick={addLikes}>Like</button>
       </div>
       {removeButton()}
