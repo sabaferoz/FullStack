@@ -28,7 +28,7 @@ const Blog = ({ blog,  user, handleNotificationChange, handleBlogChange, handleB
 
     if(user && blog.user.username=== user.username){
       return(
-        <div><button onClick={deleteBlog}>Remove</button></div>)
+        <div><button onClick={deleteBlog} id="remove">Remove</button></div>)
     }
   }
 
@@ -42,7 +42,7 @@ const Blog = ({ blog,  user, handleNotificationChange, handleBlogChange, handleB
     Url: {blog.url}
       </div>
       <div className='likes'>
-    Likes: {blog.likes} <button onClick={addLikes}>Like</button>
+    Likes: {blog.likes} <button onClick={addLikes} id="like" className='like'>Like</button>
       </div>
       {removeButton()}
 

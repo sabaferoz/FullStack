@@ -18,7 +18,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
-      blogs.sort((a,b) => a.likes - b.likes)
+      blogs.sort((a,b) => b.likes - a.likes)
       setBlogs( blogs )
     }
     )
@@ -89,7 +89,7 @@ const App = () => {
       console.log('author',newBlog.user.username)
       blogFormRef.current.toggleVisibility()
       const newBlogs=blogs.concat(newBlog)
-      newBlogs.sort((a,b) => a.likes - b.likes)
+      newBlogs.sort((a,b) => b.likes - a.likes)
       setBlogs(newBlogs)
     } catch (exception) {
       console.log(exception)
@@ -114,7 +114,7 @@ const App = () => {
 
       })
       console.log(updatedBlogs)
-      updatedBlogs.sort((a,b) => a.likes - b.likes)
+      updatedBlogs.sort((a,b) => b.likes - a.likes)
       setBlogs(updatedBlogs)
 
     } catch (exception) {
@@ -148,6 +148,7 @@ const App = () => {
         <input
           type="text"
           value={username}
+          id="username"
           name="Username"
           onChange={({ target }) => setUsername(target.value)}
         />
@@ -157,11 +158,12 @@ const App = () => {
         <input
           type="password"
           value={password}
+          id="password"
           name="Password"
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
-      <button type="submit">login</button>
+      <button type="submit" id="login">login</button>
     </form>
   )
 
@@ -169,7 +171,7 @@ const App = () => {
 
   const blogForm = () => {
     return(
-      <Togglable buttonLabel="Add new blog" cancelButtonLabel="cancel" ref={blogFormRef}>
+      <Togglable buttonLabel="Add new blog" showButtonId="addNewBlog" cancelButtonLabel="cancel" ref={blogFormRef}>
 
         <BlogForm updateBlogs={updateBlogs}/>
       </Togglable>
@@ -181,7 +183,7 @@ const App = () => {
     <div>
       {user.username} logged in
 
-      <button onClick={handleLogout}>logout</button>
+      <button onClick={handleLogout} id="logout">logout</button>
     </div>
   )
 
@@ -207,10 +209,10 @@ const App = () => {
       {blogs.map(blog => {
         return(
           <>
-            <div style={blogStyle}>
+            <div style={blogStyle} className="blog">
       Title: {blog.title}
-              <Togglable buttonLabel="view" cancelButtonLabel="hide">
-                <Blog key={blog.id} blog={blog} user={user} handleNotificationChange={handleNotificationChange} handleBlogChange={handleBlogChange} handleBlogDeletion={handleBlogDeletion} />
+              <Togglable buttonLabel="view" showButtonId="view" cancelButtonLabel="hide" >
+                <Blog key={blog.id} blog={blog} user={user} handleNotificationChange={handleNotificationChange} handleBlogChange={handleBlogChange} handleBlogDeletion={handleBlogDeletion}/>
               </Togglable>
             </div>
           </>
