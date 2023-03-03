@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import useField from '../hooks'
+import {useField} from '../hooks'
 import {
   useNavigate
 } from 'react-router-dom'
@@ -29,6 +29,14 @@ const AnecdoteForm = (props) => {
         }, 5000)
   }
 
+  const reset = () =>{
+    console.log("reset called")
+    content.onReset()
+    author.onReset()
+    info.onReset()
+
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
@@ -46,7 +54,9 @@ const AnecdoteForm = (props) => {
           <input {...info} name='info'  />
         </div>
         <button>create</button>
+        
       </form>
+      <button onClick={reset}>reset</button>
     </div>
   )
 
