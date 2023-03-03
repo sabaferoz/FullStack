@@ -1,21 +1,25 @@
 import { useState } from 'react'
+import useField from '../hooks'
 import {
   useNavigate
 } from 'react-router-dom'
 
 const AnecdoteForm = (props) => {
   const navigate = useNavigate()
-  const [content, setContent] = useState('')
+  /*const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const [info, setInfo] = useState('')*/
+  const author = useField('text')
+  const content = useField('text')
+  const info = useField('text')
 
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content:content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
      navigate('/')
@@ -31,15 +35,15 @@ const AnecdoteForm = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...content} name='content'  />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...author} name='author' />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input {...info} name='info'  />
         </div>
         <button>create</button>
       </form>
