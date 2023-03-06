@@ -24,8 +24,12 @@ const Recommended = (props) => {
      return <div>error...</div>
   }
 
-  const genre= result.data.me.favoriteGenre
-  console.log(genre)
+  let genre=""
+
+  if(result.data.me){
+        genre= result.data.me.favoriteGenre
+  }
+  
   
   const books= props.books.filter(book=>book.genres.includes(genre))
   return (

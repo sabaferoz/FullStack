@@ -71,7 +71,7 @@ const App = () => {
       <Authors show={page === 'authors'} authors={authors} query={query}/>
 
       <Books show={page === 'books'} books={books}/>
-      <Recommended show={page === 'recommended'} books={books} />
+      {token?<Recommended show={page === 'recommended'} books={books} />:null}
       <NewBook show={page === 'add'} query={query} token={token} />
       <LoginForm show= {page==='login'} setToken={setToken} token={token}/>
       <ModifyAuthor show= {page==='modifyauthor'} authors={authors} token={token} query={query}/>

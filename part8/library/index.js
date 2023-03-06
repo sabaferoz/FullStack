@@ -40,7 +40,7 @@ const typeDefs = `
 
   type Author {
     name: String!
-    bookCount: Int
+    bookCount: Int!
     born: Int
   }
 
@@ -113,15 +113,15 @@ const resolvers = {
     },
     allAuthors: async() => {
         const authors=await Author.find({})
-        const books=await Book.find({})
+        const books=await Book.find({}).populate("author")
         return authors.map(author=>{
-            const bookCount= (books.filter (book => book.author === author.name).length)
+            const bookCount= (books.filter (book => book.author.name === author.name).length)
             return {"name": author.name, "bookCount": bookCount, "born": author.born}
         
         })
     },
     me: (root, args, context) => {
-      console.log(context.currentUser)
+      console.log("current user",context.currentUser)
     return context.currentUser
   },
   },
@@ -197,7 +197,8 @@ const resolvers = {
     return author
   },
   createUser: async (root, args) => {
-    const user = new User({ username: args.username, favoriteGenre: args.avoriteGenre })
+    console.log(args.favoriteGenre)
+    const user = new User({ username: args.username, favoriteGenre: args.favoriteGenre })
 
     return user.save()
       .catch(error => {
