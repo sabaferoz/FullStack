@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
@@ -142,29 +143,31 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
+    <div className="container">
+      <form onSubmit={handleLogin}>
+        <div>
           username
-        <input
-          type="text"
-          value={username}
-          id="username"
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
+          <input
+            type="text"
+            value={username}
+            id="username"
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
           password
-        <input
-          type="password"
-          value={password}
-          id="password"
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit" id="login">login</button>
-    </form>
+          <input
+            type="password"
+            value={password}
+            id="password"
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button type="submit" id="login">login</button>
+      </form>
+    </div>
   )
 
   const blogFormRef = useRef()
@@ -197,7 +200,7 @@ const App = () => {
 
 
   return (
-    <div>
+    <div className="container">
       <h1>Blogs</h1>
       <Notification message={message} classToUse={styleClass} />
       {user === null? loginForm(): userData()}
