@@ -9,7 +9,7 @@ const parseArguments = (args: string[]): number[] => {
   }
 };
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   const bmi = (weight / height / height) * 10000;
   if (bmi < 16.0) return "Underweight (Severe thinness)";
   else if (bmi >= 16.0 && bmi <= 16.9) return "Underweight (Moderate thinness)";
@@ -19,6 +19,7 @@ const calculateBmi = (height: number, weight: number): string => {
   else if (bmi >= 30.0 && bmi <= 34.9) return "Obese (Class I)";
   else if (bmi >= 35.0 && bmi <= 39.9) return "Obese (Class II)";
   else if (bmi >= 40.0) return "Obese (Class III)";
+  return "";
 };
 
 try {
