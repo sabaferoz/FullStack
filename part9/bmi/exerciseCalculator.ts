@@ -1,3 +1,5 @@
+import { arrToNumArr, hasNaN } from "./helper";
+
 interface args {
   exerciseHours: number[];
   target: number;
@@ -18,8 +20,8 @@ const parseArguments = (args: string[]): args => {
 
   const newArgs = args.slice(2);
 
-  if (newArgs.map((val) => !isNaN(Number(val)))) {
-    const numericArray = newArgs.map((val) => Number(val));
+  if (!hasNaN(newArgs)) {
+    const numericArray = arrToNumArr(newArgs);
     return {
       exerciseHours: numericArray.slice(0, numericArray.length - 1),
       target: numericArray[numericArray.length - 1],
@@ -29,7 +31,7 @@ const parseArguments = (args: string[]): args => {
   }
 };
 
-const calculateExercises = (
+export const calculateExercises = (
   exerciseHours: number[],
   target: number
 ): resultType => {
@@ -42,9 +44,9 @@ const calculateExercises = (
 
   const trainingDays = exerciseHours.filter((hours) => hours > 0).length;
 
-  let rating: number;
-  let ratingDescription: string;
-  let success: boolean;
+  let rating = 0;
+  let ratingDescription = "";
+  let success = false;
   if (average < target) {
     rating = 3;
     ratingDescription = "poor";
@@ -83,3 +85,5 @@ try {
   }
   console.log(errorMessage);
 }
+
+export {};
