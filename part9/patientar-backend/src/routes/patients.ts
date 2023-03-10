@@ -1,12 +1,15 @@
 import express from "express";
 import patientService from "../services/patientService";
+const patientsRouter = express.Router();
 import toNewPatientEntry from "../utils";
 
-const patientsRouter = express.Router();
-
 patientsRouter.get("/", (_req, res) => {
-  console.log(patientService.getEntries());
   res.send(patientService.getEntries());
+});
+
+patientsRouter.get("/:id", (req, res) => {
+  console.log("get entries for id", patientService.getEntry(req.params.id));
+  res.send(patientService.getEntry(req.params.id));
 });
 
 patientsRouter.post("/", (req, res) => {

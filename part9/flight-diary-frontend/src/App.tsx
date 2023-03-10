@@ -23,7 +23,7 @@ const App = () => {
   console.log(date, weather,visibility,comment)
    console.log("entry", { "date": date,"weather": weather,"visibility":visibility,"comment":comment })
     try {
-   axios.post<EntryInterface>('http://localhost:3000/api/diaries', {date, weather,visibility,comment})
+   axios.post<EntryInterface>('http://localhost:3001/api/diaries', {date, weather,visibility,comment})
       .then(response => {
         setAllEntries(entries.concat(response.data))
       })} catch (e) {

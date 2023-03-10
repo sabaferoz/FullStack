@@ -16,18 +16,22 @@ const patients: PatientEntry[] = patientData.map((obj) => {
 });
 
 const patientsWithoutSsn: PatientEntryWithoutSsn[] = patients.map(
-  ({ id, name, dateOfBirth, gender, occupation }) => ({
+  ({ id, name, dateOfBirth, gender, occupation, entries }) => ({
     id,
     name,
     dateOfBirth,
     gender,
     occupation,
+    entries,
   })
 );
 
 const getEntries = (): PatientEntryWithoutSsn[] => {
-  console.log(patientsWithoutSsn);
   return patientsWithoutSsn;
+};
+
+const getEntry = (id: string): PatientEntry | undefined => {
+  return patients.find((patient) => patient.id === id);
 };
 
 const addPatient = (patientObject: NewPatientEntry) => {
@@ -43,4 +47,5 @@ const addPatient = (patientObject: NewPatientEntry) => {
 export default {
   getEntries,
   addPatient,
+  getEntry,
 };
